@@ -1,8 +1,6 @@
 package com.example.data.remote.model
 
-import android.icu.text.CaseMap
-
-data class MovieRemote(
+data class MovieDataRemote(
     val id: Int,
     val title: String,
     val poster: Poster

@@ -1,26 +1,38 @@
 package com.example.data.repository
 
-import com.example.data.local.dao.FavoriteMoviesDao
 import com.example.data.local.database.FavoriteMoviesDatabase
-import com.example.data.local.entity.FavoriteMovieDataEntity
+import com.example.data.mapper.FavoriteMapper
+import com.example.data.mapper.RemoteMapper
 import com.example.data.remote.RemoteApi
 import com.example.data.remote.services.MoviesApiService
+import com.example.domain.model.MovieDto
 import com.example.domain.repository.MoviesRepository
 import io.reactivex.Completable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 
-class MoviesDataRepository(
+class MoviesDataRepository constructor(
     val remoteApi: RemoteApi,
-    val database: FavoriteMoviesDatabase): MoviesRepository {
+    val database: FavoriteMoviesDatabase,
+    val remoteMapper: RemoteMapper,
+    val favoriteMapper: FavoriteMapper
+) : MoviesRepository {
 
     override fun fetchMovies(page: Int) = remoteApi.createService(MoviesApiService::class.java)
         .fetchMovies(page)
+        .map { remoteMapper.map(it) }
 
     override fun getFavorites() = database.favoriteMoviesDao()
         .getFaviriteMovieEntities()
+        .map { list -> list.map { favoriteMapper.mapToDto(it) } }
 
-    override fun insertFavorite(entity: FavoriteMovieDataEntity) = Completable.fromAction {
-        database.favoriteMoviesDao().insertMovieEntity(entity)
+    override fun queryFavorites(query: String) = database.favoriteMoviesDao()
+        .queryFavoriteMovieEntities(query)
+        .map { list -> list.map { favoriteMapper.mapToDto(it) } }
+
+    override fun insertFavorite(entity: MovieDto) = Completable.fromAction {
+        database.favoriteMoviesDao().insertMovieEntity(favoriteMapper.mapToFavorite(entity))
+    }
+
+    override fun deleteFavorite(entity: MovieDto) = Completable.fromAction {
+        database.favoriteMoviesDao().deleteMovieEntity(favoriteMapper.mapToFavorite(entity))
     }
 }

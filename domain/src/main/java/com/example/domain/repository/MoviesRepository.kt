@@ -1,8 +1,7 @@
 package com.example.domain.repository
 
-import com.example.data.local.entity.FavoriteMovieDataEntity
-import com.example.data.remote.model.MovieRemote
-import com.example.data.remote.model.MoviesResponse
+import com.example.domain.model.MovieDto
+import com.example.domain.model.MoviesResponse
 import io.reactivex.Completable
 import io.reactivex.Single
 
@@ -10,7 +9,11 @@ interface MoviesRepository {
 
     fun fetchMovies(page: Int): Single<MoviesResponse>
 
-    fun getFavorites(): Single<List<FavoriteMovieDataEntity>>
+    fun getFavorites(): Single<List<MovieDto>>
 
-    fun insertFavorite(entity: FavoriteMovieDataEntity): Completable
+    fun queryFavorites(query: String): Single<List<MovieDto>>
+
+    fun insertFavorite(entity: MovieDto): Completable
+
+    fun deleteFavorite(entity: MovieDto): Completable
 }

@@ -15,4 +15,7 @@ interface FavoriteMoviesDao {
 
     @Query("Select * from favorite_movies")
     fun getFaviriteMovieEntities(): Single<List<FavoriteMovieDataEntity>>
+
+    @Query("Select * from favorite_movies where title like :q")
+    fun queryFavoriteMovieEntities(q: String): Single<List<FavoriteMovieDataEntity>>
 }

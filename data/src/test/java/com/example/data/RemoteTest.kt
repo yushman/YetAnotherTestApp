@@ -1,9 +1,7 @@
 package com.example.data
 
 import com.example.data.remote.RemoteApi
-import com.example.data.remote.model.MoviesResponse
 import com.example.data.remote.services.MoviesApiService
-import io.reactivex.observers.DisposableSingleObserver
 import org.junit.Before
 import org.junit.Test
 
