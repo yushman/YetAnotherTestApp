@@ -1,0 +1,4 @@
+rootProject.name='YetAnotherTestApp'
+include ':app'
+include ':data'
+include ':domain'
