@@ -1,18 +1,21 @@
 package com.example.yetanothertestapp.dagger
 
-import android.app.Application
-import com.example.data.repository.MoviesDataRepository
+import com.example.domain.repository.MoviesRepository
+import com.example.domain.usecases.FetchMoviesUseCase
+import com.example.domain.usecases.GetFavoritesUseCase
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
 
 @Module
-class ApplicationModule(private val application: Application) {
+class ApplicationModule {
+
+//    @Provides
+//    @Singleton
+//    fun provideApplicationContext() = application
 
     @Provides
-    fun provideApplicationContext() = application.applicationContext
+    fun provideFetchMoviesUseCase(repo: MoviesRepository) = FetchMoviesUseCase(repo)
 
     @Provides
-    @Singleton
-    fun provideMoviesRepository(moviesDataRepository: MoviesDataRepository) = moviesDataRepository
+    fun provideGetFavoritesUseCase(repo: MoviesRepository) = GetFavoritesUseCase(repo)
 }

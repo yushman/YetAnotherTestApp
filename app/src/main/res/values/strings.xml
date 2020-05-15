@@ -5,4 +5,6 @@
     <string name="empty_query_top_text">По запросу "%1$s"</string>
     <string name="empty_query_bottom_text">ничего не найдено</string>
     <string name="loading_text">Загружаем...</string>
+    <string name="loading_failed">Ошибка загрузки</string>
+    <string name="reload">Перезагрузить</string>
 </resources>

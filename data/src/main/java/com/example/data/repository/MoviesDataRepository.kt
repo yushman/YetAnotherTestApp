@@ -8,8 +8,9 @@ import com.example.data.remote.services.MoviesApiService
 import com.example.domain.model.MovieDto
 import com.example.domain.repository.MoviesRepository
 import io.reactivex.Completable
+import javax.inject.Inject
 
-class MoviesDataRepository constructor(
+class MoviesDataRepository @Inject constructor(
     val remoteApi: RemoteApi,
     val database: FavoriteMoviesDatabase,
     val remoteMapper: RemoteMapper,

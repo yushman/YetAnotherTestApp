@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.yetanothertestapp.R
 import com.example.yetanothertestapp.databinding.ItemFooterBinding
+import com.example.yetanothertestapp.databinding.ItemFooterErrorBinding
 import com.example.yetanothertestapp.databinding.ItemRvBinding
 import com.example.yetanothertestapp.extensions.gone
 import com.example.yetanothertestapp.extensions.visible
@@ -14,18 +15,16 @@ import com.example.yetanothertestapp.model.MovieViewItem
 import com.squareup.picasso.Picasso
 
 class MoviesAdapter(
-    private val listener: (item: MovieViewItem.MovieItem, isLongTap: Boolean) -> Unit
+    private val listener: (item: MovieViewItem, isLongTap: Boolean) -> Unit
     ) : RecyclerView.Adapter<MoviesAdapter.AMoviesViewHolder>() {
-
-    private val ITEM_FOOTER = 0
-    private val ITEM_MOVIE = 1
 
     private var moviesList = listOf<MovieViewItem>()
 
     override fun getItemViewType(position: Int): Int {
         return when (moviesList[position]) {
-            is MovieViewItem.Footer -> ITEM_FOOTER
+            is MovieViewItem.FooterLoading -> ITEM_FOOTER
             is MovieViewItem.MovieItem -> ITEM_MOVIE
+            is MovieViewItem.FooterLoadingError -> ITEM_ERROR_FOOTER
         }
     }
 
@@ -34,15 +33,20 @@ class MoviesAdapter(
         return when (viewType){
             ITEM_FOOTER -> FooterViewHolder(ItemFooterBinding.inflate(li, parent, false))
             ITEM_MOVIE -> MoviesViewHolder(ItemRvBinding.inflate(li, parent, false))
-            else -> FooterViewHolder(ItemFooterBinding.inflate(li, parent, false))
+            else -> FooterErrorViewHolder(ItemFooterErrorBinding.inflate(li, parent, false))
         }
     }
 
     override fun getItemCount() = moviesList.size
 
     override fun onBindViewHolder(holder: AMoviesViewHolder, position: Int) {
-        if (holder is MoviesViewHolder)
-            holder.bind(moviesList[position] as MovieViewItem.MovieItem, listener)
+        when (holder) {
+            is MoviesViewHolder -> holder.bind(
+                moviesList[position] as MovieViewItem.MovieItem,
+                listener
+            )
+            is FooterErrorViewHolder -> holder.bind(listener)
+        }
     }
 
     fun update(newList: List<MovieViewItem>){
@@ -70,11 +74,20 @@ class MoviesAdapter(
         moviesList = newList
     }
 
+    companion object {
+        const val ITEM_FOOTER = 0
+        const val ITEM_ERROR_FOOTER = 1
+        const val ITEM_MOVIE = 2
+    }
+
     abstract class AMoviesViewHolder(v: View) : RecyclerView.ViewHolder(v)
 
     class MoviesViewHolder(val binding: ItemRvBinding): AMoviesViewHolder(binding.root){
 
-        fun bind(item: MovieViewItem.MovieItem, listener: (item: MovieViewItem.MovieItem, isLongTap: Boolean) -> Unit){
+        fun bind(
+            item: MovieViewItem.MovieItem,
+            listener: (item: MovieViewItem, isLongTap: Boolean) -> Unit
+        ) {
             binding.tvItemTitle.text = item.title
 
             if (item.isFavorite) binding.ivItemFavorite.visible() else binding.ivItemFavorite.gone()
@@ -93,4 +106,17 @@ class MoviesAdapter(
     }
 
     class FooterViewHolder(binding: ItemFooterBinding): AMoviesViewHolder(binding.root)
+
+    class FooterErrorViewHolder(val binding: ItemFooterErrorBinding) :
+        AMoviesViewHolder(binding.root) {
+        fun bind(listener: (item: MovieViewItem, isLongTap: Boolean) -> Unit) {
+            binding.btnItem.setOnClickListener {
+                listener.invoke(
+                    MovieViewItem.FooterLoadingError,
+                    false
+                )
+            }
+        }
+    }
+
 }
