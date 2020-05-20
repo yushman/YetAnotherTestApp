@@ -6,6 +6,7 @@ import com.example.data.mapper.FavoriteMapper
 import com.example.data.mapper.RemoteMapper
 import com.example.data.remote.RemoteApi
 import com.example.data.remote.services.MoviesApiService
+import com.example.data.repository.MoviesDataRepository
 import com.example.yetanothertestapp.App
 import dagger.Module
 import dagger.Provides
@@ -35,4 +36,13 @@ class DataModule {
         FavoriteMoviesDatabase::class.java,
         "YATA_database"
     ).build()
+
+    @Provides
+    @Singleton
+    fun provideDataRepository(
+        remoteApi: RemoteApi,
+        database: FavoriteMoviesDatabase,
+        remoteMapper: RemoteMapper,
+        favoriteMapper: FavoriteMapper
+    ) = MoviesDataRepository(remoteApi, database, remoteMapper, favoriteMapper)
 }

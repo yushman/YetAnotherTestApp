@@ -4,14 +4,12 @@ import android.app.Application
 import com.example.yetanothertestapp.App
 import dagger.BindsInstance
 import dagger.Component
-import dagger.android.support.AndroidSupportInjectionModule
+import dagger.android.AndroidInjectionModule
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [ApplicationModule::class, DataModule::class, DomainModule::class, ViewModelModule::class, AndroidSupportInjectionModule::class])
+@Component(modules = [ApplicationModule::class, DataModule::class, DomainModule::class, AndroidInjectionModule::class])//
 interface ApplicationComponent {
-
-    fun inject(app: App)
 
     @Component.Builder
     interface Builder {
@@ -20,5 +18,12 @@ interface ApplicationComponent {
 
         fun build(): ApplicationComponent
     }
+
+    fun inject(app: App)
+
+//    @Component.Factory
+//    interface Factory {
+//        fun create(@BindsInstance applicationContext: Context): ApplicationComponent
+//    }
 
 }

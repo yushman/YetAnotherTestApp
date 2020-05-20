@@ -24,5 +24,15 @@ class App : Application(), HasAndroidInjector {
         Timber.plant(Timber.DebugTree())
     }
 
-    override fun androidInjector(): AndroidInjector<Any> = androidInjector
+    override fun androidInjector(): AndroidInjector<Any> {
+        return androidInjector
+    }
+
+//    override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
+//        return DaggerApplicationComponent.factory().create(applicationContext)
+//    }
+
+//    override fun androidInjector(): AndroidInjector<Any> = androidInjector
+
+
 }

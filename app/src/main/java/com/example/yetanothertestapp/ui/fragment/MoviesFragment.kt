@@ -1,5 +1,6 @@
 package com.example.yetanothertestapp.ui.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Editable
@@ -13,7 +14,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
-import com.example.yetanothertestapp.dagger.ViewModelFactory
 import com.example.yetanothertestapp.databinding.FragmentMoviesBinding
 import com.example.yetanothertestapp.extensions.gone
 import com.example.yetanothertestapp.extensions.visible
@@ -29,15 +29,16 @@ class MoviesFragment : Fragment() {
     private val TIMER_WAITING_TIME = 1000L
 
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var moviesViewModel: MoviesFragmentViewModel
     private lateinit var binding: FragmentMoviesBinding
     private lateinit var moviesAdapter: MoviesAdapter
-    private lateinit var moviesViewModel: MoviesFragmentViewModel
     private var timer: CountDownTimer? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+
+    override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
-        super.onCreate(savedInstanceState)
+        super.onAttach(context)
 
     }
 

@@ -8,10 +8,9 @@ import com.example.domain.usecases.GetFavoritesUseCase
 import com.example.yetanothertestapp.mapper.ViewItemMapper
 import com.example.yetanothertestapp.model.MovieViewItem
 import io.reactivex.disposables.Disposables
-import javax.inject.Inject
 
 class MoviesFragmentViewModel
-@Inject
+//    @Inject
 constructor(
     val fetchMoviesUseCase: FetchMoviesUseCase,
     val getFavoritesUseCase: GetFavoritesUseCase
