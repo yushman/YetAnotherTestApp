@@ -4,11 +4,12 @@ import android.app.Application
 import com.example.yetanothertestapp.App
 import dagger.BindsInstance
 import dagger.Component
-import dagger.android.AndroidInjectionModule
+import dagger.android.support.AndroidSupportInjectionModule
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [ApplicationModule::class, DataModule::class, DomainModule::class, AndroidInjectionModule::class])//
+@Component(modules = [ApplicationModule::class, DataModule::class, DomainModule::class, AndroidSupportInjectionModule::class])
+//
 interface ApplicationComponent {
 
     @Component.Builder

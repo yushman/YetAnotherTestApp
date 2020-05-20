@@ -7,21 +7,31 @@ import com.example.domain.usecases.FetchMoviesUseCase
 import com.example.domain.usecases.GetFavoritesUseCase
 import com.example.yetanothertestapp.ui.fragment.MoviesFragment
 import com.example.yetanothertestapp.ui.fragment.MoviesFragmentViewModel
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
-import dagger.android.ContributesAndroidInjector
+import dagger.android.AndroidInjector
+import dagger.multibindings.ClassKey
 import dagger.multibindings.IntoMap
 import javax.inject.Provider
 
-@Module(includes = [FragmentBindingModule.ProvideViewModel::class])
+@Module(
+    includes = [FragmentBindingModule.ProvideViewModel::class],
+    subcomponents = [FragmentSubcomponent::class]
+)
 abstract class FragmentBindingModule {
 
-    @ContributesAndroidInjector(
-        modules = [
-            InjectViewModel::class
-        ]
-    )
-    abstract fun bind(): MoviesFragment
+//    @ContributesAndroidInjector(
+//        modules = [
+//            InjectViewModel::class
+//        ]
+//    )
+//    abstract fun bind(): MoviesFragment
+
+    @Binds
+    @IntoMap
+    @ClassKey(MoviesFragment::class)
+    abstract fun bindFactory(factory: FragmentSubcomponent.Factory): AndroidInjector.Factory<*>
 
 
     @Module
