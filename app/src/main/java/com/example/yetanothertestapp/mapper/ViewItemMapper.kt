@@ -17,7 +17,7 @@ class ViewItemMapper {
         }
 
     fun mapToViewItem(
-        moviesResponse: MoviesResponse,
+        moviesResponse: MoviesResponse?,
         oldList: List<MovieDto>,
         favorites: List<MovieDto>
     ): MutableList<MovieViewItem> {
@@ -41,7 +41,7 @@ class ViewItemMapper {
 //                    isFavorite = favorites.contains(it)
 //            ))
 //        }
-        if (moviesResponse.next != null)
+        if (moviesResponse?.next != null)
             result.add(MovieViewItem.FooterLoading)
         return result
     }

@@ -2,9 +2,12 @@
     <string name="app_name">YetAnotherTestApp</string>
 
     <string name="search_view_hint">Поиск по названию фильма</string>
-    <string name="empty_query_top_text">По запросу "%1$s"</string>
+    <string name="empty_query_top_text">По запросу \"%1$s\"</string>
     <string name="empty_query_bottom_text">ничего не найдено</string>
     <string name="loading_text">Загружаем...</string>
     <string name="loading_failed">Ошибка загрузки</string>
     <string name="reload">Перезагрузить</string>
+    <string name="movie_short_tap_toast">"Фильм - \"%1$s\", используй долгое нажатие, что бы добавить в избранное"</string>
+    <string name="movie_favorite_remove_toast">"Фильм - \"%1$s\" удален из избранного"</string>
+    <string name="movie_favorite_add_toast">"Фильм - \"%1$s\" добавлен в избранное"</string>
 </resources>

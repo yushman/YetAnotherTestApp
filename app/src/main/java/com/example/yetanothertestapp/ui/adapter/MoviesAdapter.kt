@@ -74,6 +74,15 @@ class MoviesAdapter(
         moviesList = newList
     }
 
+    fun togleItemIsFavorite(item: MovieViewItem.MovieItem) {
+        val isFavorite = item.isFavorite
+        val newList = moviesList.toMutableList()
+        val position = moviesList.indexOf(item)
+        newList[position] = item.copy(isFavorite = !isFavorite)
+        update(newList)
+
+    }
+
     companion object {
         const val ITEM_FOOTER = 0
         const val ITEM_ERROR_FOOTER = 1

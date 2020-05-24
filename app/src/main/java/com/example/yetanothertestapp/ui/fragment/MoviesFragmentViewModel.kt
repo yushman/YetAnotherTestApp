@@ -3,6 +3,7 @@ package com.example.yetanothertestapp.ui.fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.domain.model.MovieDto
+import com.example.domain.model.MoviesResponse
 import com.example.domain.usecases.FetchMoviesUseCase
 import com.example.domain.usecases.GetFavoritesUseCase
 import com.example.yetanothertestapp.mapper.ViewItemMapper
@@ -49,10 +50,12 @@ class MoviesFragmentViewModel(
     }
 
     fun proceedQuery(text: String) {
+        Timber.i("Quering from local")
         state.value = State.LoadingState
-        sub = getFavoritesUseCase.queryFavirites(text)
+        sub = getFavoritesUseCase.queryInFavorites("%$text%")
             .doOnError { handleError(it) }
             .map { mapper.mapToViewItem(it) }
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { r -> handleQueryResult(r) }
     }
 
@@ -65,14 +68,14 @@ class MoviesFragmentViewModel(
     fun loadNext() {
         Timber.i("Loading next from remote")
         if (state.value is State.LoadingState) return
+        if (state.value is State.ErrorState) return
         currentPage++
         loadMovies()
     }
 
     fun reloadPage() {
         Timber.i("Reloading from remote")
-        if (state.value is State.ErrorState)
-            loadMovies()
+        loadMovies()
     }
 
     private fun getFavorites() {
@@ -83,18 +86,26 @@ class MoviesFragmentViewModel(
         if (state.value is State.LoadingState) return
         state.value = State.LoadingState
         sub = fetchMoviesUseCase.fetchMovies(currentPage)
-            .doOnError { handleError(it) }
             .doOnSuccess {
-                if (isReloading) remoteList = it.results as MutableList<MovieDto>
+                if (isReloading) remoteList = it.results.toMutableList()
                 else remoteList.addAll(it.results)
+                state.postValue(
+                    State.LoadedState(
+                        mapper.mapToViewItem(
+                            it,
+                            remoteList,
+                            favoritesList
+                        )
+                    )
+                )
             }
-            .map { mapper.mapToViewItem(it, remoteList, favoritesList) }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { r, e -> handleLoadResult(r, e) }
     }
 
     private fun handleGetFavoritesList(result: List<MovieDto>?, e: Throwable?) {
         if (e == null && result != null) favoritesList = result
+        if (e != null) handleError(e)
     }
 
     private fun handleQueryResult(result: List<MovieViewItem>) {
@@ -106,13 +117,13 @@ class MoviesFragmentViewModel(
         state.value = State.ErrorState(e.message!!)
     }
 
-    private fun handleLoadResult(result: MutableList<MovieViewItem>?, e: Throwable?) {
-        val _result = mutableListOf<MovieViewItem>()
-        if (e != null) _result.add(MovieViewItem.FooterLoadingError)
-        else _result.addAll(result!!)
-        state.value = State.LoadedState(_result)
-
-
+    private fun handleLoadResult(result: MoviesResponse?, e: Throwable?) {
+        if (e != null) {
+            val list = mapper.mapToViewItem(result, remoteList, favoritesList)
+            list.add(MovieViewItem.FooterLoadingError)
+            state.value = State.LoadedState(list)
+            state.value = State.ErrorState(e.message!!)
+        }
     }
 
     private fun clearSub() {

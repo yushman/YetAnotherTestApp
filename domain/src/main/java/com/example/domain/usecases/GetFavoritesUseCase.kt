@@ -11,9 +11,8 @@ class GetFavoritesUseCase(private val moviesRepository: MoviesRepository) : UseC
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
 
-    fun queryFavirites(query: String) = moviesRepository.queryFavorites(query)
+    fun queryInFavorites(query: String) = moviesRepository.queryFavorites(query)
         .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
 
     fun insertFavorite(entity: MovieDto) = moviesRepository.insertFavorite(entity)
         .subscribeOn(Schedulers.io())
