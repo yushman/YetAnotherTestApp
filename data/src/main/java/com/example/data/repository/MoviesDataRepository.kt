@@ -8,13 +8,12 @@ import com.example.data.remote.services.MoviesApiService
 import com.example.domain.model.MovieDto
 import com.example.domain.repository.MoviesRepository
 import io.reactivex.Completable
-import javax.inject.Inject
 
-class MoviesDataRepository @Inject constructor(
-    val remoteApi: RemoteApi,
-    val database: FavoriteMoviesDatabase,
-    val remoteMapper: RemoteMapper,
-    val favoriteMapper: FavoriteMapper
+class MoviesDataRepository(
+    private val remoteApi: RemoteApi,
+    private val database: FavoriteMoviesDatabase,
+    private val remoteMapper: RemoteMapper,
+    private val favoriteMapper: FavoriteMapper
 ) : MoviesRepository {
 
     override fun fetchMovies(page: Int) = remoteApi.createService(MoviesApiService::class.java)

@@ -8,9 +8,8 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="Poster">
+    <style name="Poster" parent="">
         <item name="android:layout_height">128dp</item>
-        <item name="android:layout_width">95dp</item>
     </style>
 
     <style name="Poster.Movie" parent="Poster"/>

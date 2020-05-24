@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.yetanothertestapp.R
 import com.example.yetanothertestapp.databinding.ItemFooterBinding
 import com.example.yetanothertestapp.databinding.ItemFooterErrorBinding
@@ -12,7 +13,6 @@ import com.example.yetanothertestapp.databinding.ItemRvBinding
 import com.example.yetanothertestapp.extensions.gone
 import com.example.yetanothertestapp.extensions.visible
 import com.example.yetanothertestapp.model.MovieViewItem
-import com.squareup.picasso.Picasso
 
 class MoviesAdapter(
     private val listener: (item: MovieViewItem, isLongTap: Boolean) -> Unit
@@ -92,7 +92,8 @@ class MoviesAdapter(
 
             if (item.isFavorite) binding.ivItemFavorite.visible() else binding.ivItemFavorite.gone()
 
-            Picasso.get().load(item.poster)
+            Glide.with(binding.ivItemPoster).load(item.poster)
+                .centerInside()
                 .placeholder(R.drawable.ic_image_black_24dp)
                 .error(R.drawable.ic_image_black_24dp)
                 .into(binding.ivItemPoster)

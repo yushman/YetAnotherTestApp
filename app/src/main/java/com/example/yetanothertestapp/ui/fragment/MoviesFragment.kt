@@ -1,6 +1,5 @@
 package com.example.yetanothertestapp.ui.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Editable
@@ -11,7 +10,6 @@ import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.example.yetanothertestapp.databinding.FragmentMoviesBinding
@@ -20,27 +18,17 @@ import com.example.yetanothertestapp.extensions.visible
 import com.example.yetanothertestapp.model.MovieViewItem
 import com.example.yetanothertestapp.ui.adapter.MoviesAdapter
 import com.example.yetanothertestapp.ui.custom.FooterGridLayoutManager
-import dagger.android.support.AndroidSupportInjection
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
-import javax.inject.Inject
 
 class MoviesFragment : Fragment() {
 
     private val TIMER_WAITING_TIME = 1000L
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    lateinit var moviesViewModel: MoviesFragmentViewModel
+    private val moviesViewModel: MoviesFragmentViewModel by viewModel()
     private lateinit var binding: FragmentMoviesBinding
     private lateinit var moviesAdapter: MoviesAdapter
     private var timer: CountDownTimer? = null
-
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        AndroidSupportInjection.inject(this)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,16 +42,11 @@ class MoviesFragment : Fragment() {
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-        moviesViewModel.loadMovies()
-    }
-
     private fun initViewModel() {
-        moviesViewModel =
-            ViewModelProvider(this, viewModelFactory).get(MoviesFragmentViewModel::class.java)
+//        moviesViewModel =
+//            ViewModelProvider(this, viewModelFactory).get(MoviesFragmentViewModel::class.java)
 //            provideViewModel(this, MoviesFragmentViewModel::class.java)
-        moviesViewModel.state.observe(this, Observer { updateUiByState(it) })
+        moviesViewModel.state.observe(this.viewLifecycleOwner, Observer { updateUiByState(it) })
     }
 
     private fun initViews() {
@@ -73,24 +56,35 @@ class MoviesFragment : Fragment() {
         binding.rvMoviesList.apply {
             adapter = moviesAdapter
             layoutManager = lm
+//            isNestedScrollingEnabled = false
+            setHasFixedSize(true)
+//            lm.isAutoMeasureEnabled = true
             addItemDecoration(DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL))
             addItemDecoration(DividerItemDecoration(this.context, DividerItemDecoration.HORIZONTAL))
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    val lastVisible = lm.findLastVisibleItemPosition()
+                    Timber.i(lastVisible.toString())
+//                    if (lm.findLastVisibleItemPosition() >= moviesAdapter.itemCount - 1)
+//                        moviesViewModel.loadNext()
                     super.onScrollStateChanged(recyclerView, newState)
-                    if (lm.findLastVisibleItemPosition() > moviesAdapter.itemCount - 5)
-                        moviesViewModel.loadNext()
+
                 }
             })
         }
 
         binding.srlMoviesList.setOnRefreshListener { needUpdateList() }
 
-        binding.includeSearchView.etSearview.addTextChangedListener { text: Editable? -> prceedQuery(text.toString()) }
-
+        binding.includeSearchView.etSearchview.addTextChangedListener { text: Editable? ->
+            prceedQuery(
+                text.toString()
+            )
+        }
     }
 
     private fun updateUiByState(state: MoviesFragmentViewModel.State) {
+        binding.srlMoviesList.isRefreshing = false
+        Timber.i(state.toString())
         when (state) {
             is MoviesFragmentViewModel.State.LoadingState -> showLoadingState()
             is MoviesFragmentViewModel.State.ErrorState -> showErrorState(state.message)

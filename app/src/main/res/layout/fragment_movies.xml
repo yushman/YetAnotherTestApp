@@ -31,12 +31,14 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:focusableInTouchMode="true"
                 android:orientation="vertical">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_movies_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:overScrollMode="never"
                     tools:listitem="@layout/item_rv" />
 
             </LinearLayout>
