@@ -137,7 +137,6 @@ class MoviesFragment : Fragment() {
                 }
 
                 override fun onTick(p0: Long) {
-//                moviesViewModel.proceedQuery(text)
                 }
             }.start()
         }
