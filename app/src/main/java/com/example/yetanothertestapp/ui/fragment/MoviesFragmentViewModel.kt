@@ -25,11 +25,6 @@ class MoviesFragmentViewModel(
     private var sub = Disposables.empty()
     private var currentPage = 1
 
-    init {
-        getFavorites()
-        loadMovies(isReloading = true)
-    }
-
     override fun onCleared() {
         if (!sub.isDisposed) sub.dispose()
         super.onCleared()
@@ -78,11 +73,11 @@ class MoviesFragmentViewModel(
         loadMovies()
     }
 
-    private fun getFavorites() {
+    fun getFavorites() {
         sub = getFavoritesUseCase.getFavorites().subscribe { r, e -> handleGetFavoritesList(r, e) }
     }
 
-    private fun loadMovies(isReloading: Boolean = false) {
+    fun loadMovies(isReloading: Boolean = false) {
         if (state.value is State.LoadingState) return
         state.value = State.LoadingState
         sub = fetchMoviesUseCase.fetchMovies(currentPage)

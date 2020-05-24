@@ -38,14 +38,18 @@ class MoviesFragment : Fragment() {
     ): View? {
         binding = FragmentMoviesBinding.inflate(inflater, container, false)
 
-        initViewModel()
+        initViewModel(savedInstanceState)
         initViews()
 
         return binding.root
     }
 
-    private fun initViewModel() {
+    private fun initViewModel(savedInstanceState: Bundle?) {
         moviesViewModel.state.observe(this.viewLifecycleOwner, Observer { updateUiByState(it) })
+        if (savedInstanceState == null) {
+            moviesViewModel.getFavorites()
+            moviesViewModel.loadMovies(isReloading = true)
+        }
     }
 
     private fun initViews() {
