@@ -3,7 +3,7 @@ Yet Another Test App
 
 Приложение, загружающее список фильмов с удаленного Api
 
-Используется - Retrofit, Gson, Glide, Koin, MVVM, LD, ROOM, RX
+Используется - CleanArchitecture, Retrofit, Gson, Glide, Koin, MVVM, LD, ROOM, RX
 
 Что выполнено:
 * Короткий тап - Тост с названием
